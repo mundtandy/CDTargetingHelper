@@ -23,7 +23,7 @@ def initCurrentWeekData():
 	
 	CurrentWeek = detectLatestCurrentWeek()
 	fileCurrentWeek = CurrentWeek % 100
-	scriptFile = f"F{CurrentWeek}\W{fileCurrentWeek} MyCD Scripts.xlsx" 
+	scriptFile = f"{pPath}\F{CurrentWeek}\W{fileCurrentWeek} MyCD Scripts.xlsx" 
 
 def StartSheet():
 	print('Parsing Worksheet')
@@ -47,8 +47,8 @@ def detectLatestCurrentWeek():
 
 def parseTargeting():
 	file = detectLatestWorksheet()
-	location = f"F{CurrentWeek}\{file}" 
-
+	location = f"{pPath}\F{CurrentWeek}\{file}" 
+	
 	parseWorkSheet(location, 4)
 	parseWorkSheet(location, 5)
 	
@@ -87,7 +87,7 @@ def detectLatestWorksheet():
 	
 def parseWorkSheet(location, sheet):
 	xls = pd.ExcelFile(location)
-
+	
 	df = pd.read_excel(location, sheet_name=xls.sheet_names[sheet])
 	
 	rows = df.iterrows()
@@ -96,16 +96,20 @@ def parseWorkSheet(location, sheet):
 			mCodes.append(row['Code'])	
 			
 def checkScript():
+	print("checking")
 	if not checkScriptExists():
 		createScript()
 	else:
 		validateScript()
 
 def createScript():
-	print(f"Scripts file for CurrentWeek {fileCurrentWeek} don't exist.")
+	print(f"Script file for Current Week {fileCurrentWeek} don't exist.")
 	
-	source=pPath+"\MyCD Scripts.xlsx"
-	dest=pPath+f"\{scriptFile}"
+	source=F"{pPath}\MyCD Scripts.xlsx"
+	dest=scriptFile
+	
+	print(source)
+	print(dest)
 	
 	shutil.copy(source,dest)
 	print(f"Created: W{CurrentWeek} MyCD Scripts.xlsx")
@@ -139,7 +143,7 @@ def validateScript():
 	print('No issues found.') if valid else print('Issues found, please resolve before continuing with myCD targetting.')
 	
 def checkScriptExists():
-	return os.path.exists(pPath+f"/{scriptFile}")
+	return os.path.exists(scriptFile)
 
 def startBitmark():
 	print('Checking for bitmarks')

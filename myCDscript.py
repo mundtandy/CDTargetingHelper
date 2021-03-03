@@ -87,16 +87,17 @@ def detectLatestWorksheet():
 	
 def parseWorkSheet(location, sheet):
 	xls = pd.ExcelFile(location)
-	
 	df = pd.read_excel(location, sheet_name=xls.sheet_names[sheet])
 	
 	rows = df.iterrows()
+	
+	Checkcol = 'Message name' if sheet == 4 else 'Name' 
+	
 	for index, row in rows:
-		if not pd.isna(row['Code']):
+		if not pd.isna(row['Code']) and not pd.isna(row[Checkcol]):
 			mCodes.append(row['Code'])	
-			
+
 def checkScript():
-	print("checking")
 	if not checkScriptExists():
 		createScript()
 	else:
@@ -108,8 +109,6 @@ def createScript():
 	source=F"{pPath}\MyCD Scripts.xlsx"
 	dest=scriptFile
 	
-	print(source)
-	print(dest)
 	
 	shutil.copy(source,dest)
 	print(f"Created: W{CurrentWeek} MyCD Scripts.xlsx")
@@ -125,9 +124,9 @@ def createScript():
 		
 def validateScript():
 	df = pd.read_excel(scriptFile, sheet_name='CI Targeting')
-
+	
 	codes = [x for x in df['Message Code'].to_numpy() if x == x]
-	print(codes)
+	
 	valid = True
 	for val in mCodes:
 		if val == val:

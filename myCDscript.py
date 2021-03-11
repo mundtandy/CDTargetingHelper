@@ -54,7 +54,7 @@ def parseTargeting():
 	
 
 def detectLatestWorksheet():
-	reg = re.compile(f"mycd worksheet( )+(- +?)?wk{fileCurrentWeek}(.)*?v.+xlsx") #regex to match filenames, takes into account clone of files
+	reg = re.compile(f"(copy of )?mycd worksheet( )+(- +?)?wk{fileCurrentWeek}(.)*?v.+xlsx") #regex to match filenames, takes into account clone of files
 	
 	print(os.path.join(pPath,f"f{CurrentWeek}"))	
 	

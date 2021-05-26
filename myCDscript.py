@@ -17,6 +17,10 @@ workSheetCols = 'Message name', 'Name'
 mCodes = []
 bitmarks = []
 
+def getNewWeek():
+	#Check downloads folder for myCD targeting script. Can use this to add new week. Will need to create list of PELWeek to not make F2153+
+	print('yes')
+
 def initCurrentWeekData():
 	global CurrentWeek, fileCurrentWeek, scriptFile, pPath
 	pPath = Path(os.getcwd()).parent #Get Parent Folder and define here
@@ -49,9 +53,15 @@ def parseTargeting():
 	file = detectLatestWorksheet()
 	location = f"{pPath}\F{CurrentWeek}\{file}" 
 	
-	parseWorkSheet(location, 4)
-	parseWorkSheet(location, 5)
+	#Get targeting sheets (can't hardcode sheet indexes as it changes sometimes)
+	df = pd.read_excel(location, None);
+		
+	indices = [i for i, elem in enumerate(df.keys()) if 'Targeting CMS -' in elem]
 	
+	print(indices)
+	
+	for i in indices:
+		parseWorkSheet(location, i)	
 
 def detectLatestWorksheet():
 	reg = re.compile(f"(copy of )?mycd worksheet( )+(- +?)?wk{fileCurrentWeek}(.)*?v.+xlsx") #regex to match filenames, takes into account clone of files
@@ -87,15 +97,20 @@ def detectLatestWorksheet():
 	
 def parseWorkSheet(location, sheet):
 	xls = pd.ExcelFile(location)
+	print(xls.sheet_names[sheet])
 	df = pd.read_excel(location, sheet_name=xls.sheet_names[sheet])
 	
 	rows = df.iterrows()
 	
-	Checkcol = 'Message name' if sheet == 4 else 'Name' 
+	Checkcol = 'Message name' if 'Message name' in df else 'Name' #Sometimes this will change. 
+	print('Using column: ' + Checkcol)
+	
 	
 	for index, row in rows:
 		if not pd.isna(row['Code']) and not pd.isna(row[Checkcol]):
 			mCodes.append(row['Code'])	
+			print(row['Code'])
+	
 
 def checkScript():
 	if not checkScriptExists():

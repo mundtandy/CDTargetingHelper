@@ -99,10 +99,10 @@ def parseWorkSheet(location, sheet):
 	df = pd.read_excel(location, sheet_name=xls.sheet_names[sheet], header=None)
 	
 	rows = df.iterrows()
-
+	'Message name' if 'Message name' in df else 'Name'
 	for index, row in rows:
 		if not pd.isna(row[0]): #Is there a message code
-			if not pd.isna(row[1]) or not pd.isna(row[2]) or not pd.isna(row[3]): #Multicolumn headers won't have data for [1-3]
+			if row[0] not in ('Message name', 'Name', 'Code', 'Message Code') and (not pd.isna(row[1]) or not pd.isna(row[2]) or not pd.isna(row[3])): #Multicolumn headers won't have data for [1-3]
 				mCodes.append(row[0])	
 				print(row[0])
 	

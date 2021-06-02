@@ -58,8 +58,6 @@ def parseTargeting():
 		
 	indices = [i for i, elem in enumerate(df.keys()) if 'Targeting CMS -' in elem]
 	
-	print(indices)
-	
 	for i in indices:
 		parseWorkSheet(location, i)	
 
@@ -98,18 +96,15 @@ def detectLatestWorksheet():
 def parseWorkSheet(location, sheet):
 	xls = pd.ExcelFile(location)
 	print(xls.sheet_names[sheet])
-	df = pd.read_excel(location, sheet_name=xls.sheet_names[sheet])
+	df = pd.read_excel(location, sheet_name=xls.sheet_names[sheet], header=None)
 	
 	rows = df.iterrows()
-	
-	Checkcol = 'Message name' if 'Message name' in df else 'Name' #Sometimes this will change. 
-	print('Using column: ' + Checkcol)
-	
-	
+
 	for index, row in rows:
-		if not pd.isna(row['Code']) and not pd.isna(row[Checkcol]):
-			mCodes.append(row['Code'])	
-			print(row['Code'])
+		if not pd.isna(row[0]): #Is there a message code
+			if not pd.isna(row[1]) or not pd.isna(row[2]) or not pd.isna(row[3]): #Multicolumn headers won't have data for [1-3]
+				mCodes.append(row[0])	
+				print(row[0])
 	
 
 def checkScript():
